@@ -17,6 +17,9 @@ description: Check and fix Python code style, formatting, and linting errors. En
 - Static Access: MANDATORY static attribute access. NEVER use `getattr`/`setattr`/`hasattr` unless the logic is inherently dynamic and cannot be expressed otherwise.
 - Composition Over Inheritance: Avoid deep inheritance or complex `__getattr__` that confuses static analysis.
 - Top-Level Imports: Place imports at the top; avoid local imports unless resolving circular dependencies.
+- Import Rules:
+  - Within the same module: Use relative imports (e.g., `from .module import func`).
+  - Across different modules: Use absolute imports.
 - Pattern Matching: Use `match` instead of multiple `if isinstance()` checks for better clarity.
 - Manage Complexity: Refactor and split overly complex functions into smaller components.
 
