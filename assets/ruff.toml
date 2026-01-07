@@ -1,7 +1,41 @@
+# Ruff Configuration - Best Practices
+# Target Python version for modern syntax
+target-version = "py310"
+line-length = 88
+
 [lint]
-select = ["E", "F", "I", "B", "ANN", "BLE", "UP"]
-ignore = ["ANN101", "ANN102"]
+# Enable comprehensive rule sets for code quality
+select = [
+    "F",      # Pyflakes - catches logic errors
+    "E", "W", # pycodestyle - PEP 8 style checking
+    "I",      # isort - import sorting
+    "B",      # flake8-bugbear - common gotchas
+    "UP",     # pyupgrade - modern Python syntax
+    "SIM",    # flake8-simplify - suggests simpler logic
+    "PL",     # Pylint - comprehensive code quality
+    "ANN",    # flake8-annotations - type hints
+    "RUF",    # Ruff-specific rules
+    "PERF",   # Perflint - performance anti-patterns
+    "BLE",    # flake8-blind-except - exception handling
+    "FA",     # flake8-future-annotations
+    "TRY",    # tryceratops - clean exception handling
+    "RSE",    # flake8-raise - raise statement best practices
+]
+
+ignore = [
+    "E501",   # Line length (handled by formatter)
+    "ANN101", # Missing type hint for self (inferred by type checkers)
+    "ANN102", # Missing type hint for cls (inferred by type checkers)
+    "COM812", # Trailing comma (conflicts with formatter)
+    "ISC001", # Implicit string concatenation (conflicts with formatter)
+]
+
+# Ignore type hint requirements in test files
+[lint.per-file-ignores]
+"tests/**/*.py" = ["ANN"]
+"**/test_*.py" = ["ANN"]
 
 [format]
+# Standard formatting settings (compatible with Black)
 quote-style = "double"
 indent-style = "space"
