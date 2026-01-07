@@ -30,6 +30,7 @@ description: Check and fix Python code style, formatting, and linting errors. En
   - Structured Returns: Use `TypedDict` or `NamedTuple` instead of plain `dict` or `tuple` for complex return values.
   - Protocols for Callables: Use a `Protocol` with a `__call__` method instead of `Callable`.
   - No Suppressions: Fix type errors instead of using `# type: ignore` or `cast(Any, ...)`.
+  - Type Aliases: Use type aliases for complex or repeated types instead of redundant definitions.
 - use `if TYPE_CHECKING` only if necessary. Do not abuse it.
 - See [cheatsheet](references/type-hints-cheat-sheet.md) for 3.12+ type syntax.
 
