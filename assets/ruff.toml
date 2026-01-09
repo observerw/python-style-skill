@@ -56,9 +56,31 @@ force-single-line = false
 lines-after-imports = 2
 
 [lint.per-file-ignores]
-"tests/**/*.py" = ["ANN", "S101", "PLR2004"]
-"**/test_*.py" = ["ANN", "S101", "PLR2004"]
-"conftest.py" = ["ANN"]
+"tests/**/*.py" = [
+    "ANN",     # Type annotations not required in tests
+    "S101",    # Assert statements are expected in tests
+    "PLR2004", # Magic values are common in test assertions
+    "PLR0913", # Test functions may have many fixture parameters
+    "PLR0915", # Test functions may have many statements
+    "PLR6301", # Test methods don't always need self
+    "C901",    # Test functions can be complex
+    "SLF001",  # Tests often need to access private members
+    "ARG001",  # Fixtures may not be used directly
+    "ARG002",  # Fixtures may not be used directly
+]
+"**/test_*.py" = [
+    "ANN",
+    "S101",
+    "PLR2004",
+    "PLR0913",
+    "PLR0915",
+    "PLR6301",
+    "C901",
+    "SLF001",
+    "ARG001",
+    "ARG002",
+]
+"conftest.py" = ["ANN", "ARG001", "ARG002"]
 "__init__.py" = ["F401"]  # Allow unused imports for re-export
 
 [format]
