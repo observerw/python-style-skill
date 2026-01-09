@@ -13,27 +13,53 @@ select = [
     "UP",     # pyupgrade - modern Python syntax
     "SIM",    # flake8-simplify - suggests simpler logic
     "PL",     # Pylint - comprehensive code quality
-    "ANN",    # flake8-annotations - type hints
+    "ANN",    # flake8-annotations - type hints (ANN401 bans Any)
     "RUF",    # Ruff-specific rules
     "PERF",   # Perflint - performance anti-patterns
     "BLE",    # flake8-blind-except - exception handling
     "FA",     # flake8-future-annotations
     "TRY",    # tryceratops - clean exception handling
     "RSE",    # flake8-raise - raise statement best practices
+    "C4",     # flake8-comprehensions - better comprehensions
+    "C90",    # mccabe - cyclomatic complexity
+    "S",      # flake8-bandit - security checks
+    "PT",     # flake8-pytest-style - pytest best practices
+    "DTZ",    # flake8-datetimez - timezone-aware datetime
+    "PIE",    # flake8-pie - misc code improvements
+    "RET",    # flake8-return - return statement improvements
+    "PTH",    # flake8-use-pathlib - prefer pathlib over os.path
+    "TCH",    # flake8-type-checking - TYPE_CHECKING optimization
+    "LOG",    # flake8-logging - logging best practices
+    "PGH",    # pygrep-hooks - ban blanket type: ignore (PGH003)
 ]
 
 ignore = [
-    "E501",   # Line length (handled by formatter)
-    "ANN101", # Missing type hint for self (inferred by type checkers)
-    "ANN102", # Missing type hint for cls (inferred by type checkers)
-    "COM812", # Trailing comma (conflicts with formatter)
-    "ISC001", # Implicit string concatenation (conflicts with formatter)
+    "E501",    # Line length (handled by formatter)
+    "ANN101",  # Missing type hint for self (inferred by type checkers)
+    "ANN102",  # Missing type hint for cls (inferred by type checkers)
+    "COM812",  # Trailing comma (conflicts with formatter)
+    "ISC001",  # Implicit string concatenation (conflicts with formatter)
+    "PLR0913", # Too many arguments - sometimes necessary
+    "PLR2004", # Magic value comparison - sometimes reasonable
+    "TRY003",  # Long exception message - custom error messages are common
 ]
 
-# Ignore type hint requirements in test files
+[lint.mccabe]
+max-complexity = 10
+
+[lint.pylint]
+max-args = 6
+max-branches = 12
+
+[lint.isort]
+force-single-line = false
+lines-after-imports = 2
+
 [lint.per-file-ignores]
-"tests/**/*.py" = ["ANN"]
-"**/test_*.py" = ["ANN"]
+"tests/**/*.py" = ["ANN", "S101", "PLR2004"]
+"**/test_*.py" = ["ANN", "S101", "PLR2004"]
+"conftest.py" = ["ANN"]
+"__init__.py" = ["F401"]  # Allow unused imports for re-export
 
 [format]
 # Standard formatting settings (compatible with Black)

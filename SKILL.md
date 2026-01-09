@@ -5,44 +5,52 @@ description: Check and fix Python code style, formatting, and linting errors. En
 
 # Python Style & Quality Standards
 
-## Setup: Ruff Configuration
+## Workflow
 
-Before checking or fixing code style, ensure the project has Ruff configuration:
+1. **Check existing configuration**: Look for `ruff.toml`, `.ruff.toml`, or `[tool.ruff]` in `pyproject.toml`
+2. **Setup configuration**:
+   - If no config exists: Copy `assets/ruff.toml` to project root as `ruff.toml`
+   - If config exists in `pyproject.toml`: Create `ruff.toml` by merging existing settings with `assets/ruff.toml` (preserve project-specific rules like `target-version`, `known-first-party`, custom ignores)
+   - If `ruff.toml` already exists: Enhance it with missing rules from `assets/ruff.toml`
+3. **Adapt to project**: Review and modify rules based on project needs (see below)
+4. **Run Ruff**: `ruff check --fix <path>` and `ruff format <path>`
 
-1. Check for existing configuration:
-   - Look for `ruff.toml` or `.ruff.toml` in the project root
-   - Look for `[tool.ruff]` section in `pyproject.toml`
-2. If no configuration exists:
-   - Preferred: Add the configuration from `assets/ruff.toml` to the project's `pyproject.toml` under `[tool.ruff]` section
-   - Alternative: Copy `assets/ruff.toml` to the project root as `ruff.toml`
-   - Always inform the user about the added configuration
-3. Run Ruff commands: Always run check with autofix: `ruff check --fix <path>`
+## Adapting ruff.toml to Project
 
-## Error Handling
+The `assets/ruff.toml` provides a strict baseline. Adjust based on project context:
 
-- Domain-Specific Catching: Catch ONLY business/domain-level exceptions. Let all other exceptions CRASH the local context.
-- Log at Entrypoints: Use top-level interface/entrypoint logging to capture and record unhandled crashes; do not litter code with defensive `try...except` blocks.
+| Scenario        | Recommended Changes                                                |
+| --------------- | ------------------------------------------------------------------ |
+| Python < 3.10   | Change `target-version` accordingly                                |
+| CLI/scripts     | Consider ignoring `T20` (print statements)                         |
+| Data science    | May relax `ANN` for notebooks, add `"*.ipynb"` to per-file-ignores |
+| Django/Flask    | Add `DJ`/`ASYNC` rules, ignore `RUF012` for mutable class attrs    |
+| Legacy codebase | Start with fewer rules, incrementally enable more                  |
+| Library/SDK     | Keep strict; add `D` (pydocstyle) for public API docs              |
 
-## Code Clarity & Static Analysis
+Always set `known-first-party` in `[lint.isort]` to the project's package name.
 
-- Static Access: MANDATORY static attribute access. NEVER use `getattr`/`setattr`/`hasattr` unless the logic is inherently dynamic and cannot be expressed otherwise.
-- Composition Over Inheritance: Avoid deep inheritance or complex `__getattr__` that confuses static analysis.
-- Import Rules:
-  - Within the same module: Use relative imports (e.g., `from .module import func`).
-  - Across different modules: Use absolute imports.
-- Pattern Matching: Use `match` instead of multiple `if isinstance()` checks for better clarity.
+## Best Practices
 
-## Type Hinting
+These guidelines cover design decisions that linters cannot enforce:
 
-- Advanced Type Practices:
-  - Specific Types: Use specific types instead of `Any`.
-  - Structured Returns: Use `TypedDict` or `NamedTuple` instead of plain `dict` or `tuple` for complex return values.
-  - Protocols for Callables: Use a `Protocol` with a `__call__` method instead of `Callable`.
-  - No Suppressions: Fix type errors instead of using `# type: ignore` or `cast(Any, ...)`.
-  - Type Aliases: Use type aliases for complex or repeated types instead of redundant definitions.
-- use `if TYPE_CHECKING` only if necessary. Do not abuse it.
-- See [cheatsheet](references/type-hints-cheat-sheet.md) for 3.12+ type syntax.
+### Error Handling
 
-## Functional Correctness & Safety
+- **Domain-Specific Catching**: Catch ONLY business/domain-level exceptions. Let unexpected exceptions propagate.
+- **Log at Entrypoints**: Handle unhandled exceptions at top-level interfaces; avoid defensive `try...except` blocks throughout code.
 
-- Keyword-Only Defaults: Force parameters with defaults to be keyword-only by placing them after `*`.
+### Code Clarity
+
+- **Static Access**: Avoid `getattr`/`setattr`/`hasattr` unless logic is inherently dynamic.
+- **Composition Over Inheritance**: Prefer composition; avoid deep inheritance or magic `__getattr__`.
+- **Pattern Matching**: Use `match` instead of chained `if isinstance()` checks.
+
+### Type Hinting
+
+- Use `TypedDict`/`NamedTuple` for complex return values instead of plain `dict`/`tuple`
+- Use `Protocol` with `__call__` instead of `Callable` for complex signatures
+- See [cheatsheet](references/type-hints-cheat-sheet.md) for 3.12+ syntax
+
+### Function Design
+
+- **Keyword-Only Defaults**: Place parameters with defaults after `*` to force keyword-only usage
