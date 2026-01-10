@@ -3,40 +3,43 @@
 target-version = "py310"
 line-length = 88
 
-[lint]
-# Enable comprehensive rule sets for code quality
+[tool.ruff.lint]
 select = [
-    "F",      # Pyflakes - catches logic errors
-    "E", "W", # pycodestyle - PEP 8 style checking
-    "I",      # isort - import sorting
-    "B",      # flake8-bugbear - common gotchas
-    "UP",     # pyupgrade - modern Python syntax
-    "SIM",    # flake8-simplify - suggests simpler logic
-    "PL",     # Pylint - comprehensive code quality
-    "ANN",    # flake8-annotations - type hints (ANN401 bans Any)
-    "RUF",    # Ruff-specific rules
-    "PERF",   # Perflint - performance anti-patterns
-    "BLE",    # flake8-blind-except - exception handling
-    "FA",     # flake8-future-annotations
-    "TRY",    # tryceratops - clean exception handling
-    "RSE",    # flake8-raise - raise statement best practices
-    "C4",     # flake8-comprehensions - better comprehensions
-    "C90",    # mccabe - cyclomatic complexity
-    "S",      # flake8-bandit - security checks
-    "PT",     # flake8-pytest-style - pytest best practices
-    "DTZ",    # flake8-datetimez - timezone-aware datetime
-    "PIE",    # flake8-pie - misc code improvements
-    "RET",    # flake8-return - return statement improvements
-    "PTH",    # flake8-use-pathlib - prefer pathlib over os.path
-    "TCH",    # flake8-type-checking - TYPE_CHECKING optimization
-    "LOG",    # flake8-logging - logging best practices
-    "PGH",    # pygrep-hooks - ban blanket type: ignore (PGH003)
+    "E", "W",          # Basic pycodestyle styling (non-disruptive)
+    "F",               # Pyflakes — actual logic errors (must-have)
+    "I",               # isort — consistent import ordering
+    "B",               # flake8-bugbear — common mistakes and gotchas
+
+    # Modern Python & code simplification
+    "UP",              # pyupgrade — modern syntax where possible
+    "SIM",             # flake8-simplify — simpler logic constructs
+    "PIE",             # flake8-pie — code improvements
+    "C4",              # flake8-comprehensions — better comprehensions
+    "RET",             # flake8-return — consistent return statements
+
+    # Exception & error handling
+    "BLE",             # blind except — avoid 'except:' without type
+    "TRY",             # tryceratops — clean exception handling
+    "RSE",             # raise — ensure proper raise statements
+
+    # Typing & annotation
+    "ANN",             # flake8-annotations — enforce type hints
+
+    # Avoid blanket ignore directives
+    "PGH",             # pygrep-hooks — PGH003: no blanket type: ignore
+
+    # Modern path usage
+    "PTH",             # pathlib — prefer pathlib over os.path
+
+    # Performance
+    "PERF",            # perflint — performance anti-patterns
+
+    # Ruff-specific useful rules
+    "RUF",
 ]
 
 ignore = [
     "E501",    # Line length (handled by formatter)
-    "ANN101",  # Missing type hint for self (inferred by type checkers)
-    "ANN102",  # Missing type hint for cls (inferred by type checkers)
     "COM812",  # Trailing comma (conflicts with formatter)
     "ISC001",  # Implicit string concatenation (conflicts with formatter)
     "PLR0913", # Too many arguments - sometimes necessary
@@ -44,46 +47,26 @@ ignore = [
     "TRY003",  # Long exception message - custom error messages are common
 ]
 
-[lint.mccabe]
-max-complexity = 10
-
-[lint.pylint]
-max-args = 6
-max-branches = 12
-
-[lint.isort]
-force-single-line = false
-lines-after-imports = 2
-
-[lint.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
-    "ANN",     # Type annotations not required in tests
-    "S101",    # Assert statements are expected in tests
-    "PLR2004", # Magic values are common in test assertions
-    "PLR0913", # Test functions may have many fixture parameters
-    "PLR0915", # Test functions may have many statements
-    "PLR6301", # Test methods don't always need self
-    "C901",    # Test functions can be complex
-    "SLF001",  # Tests often need to access private members
-    "ARG001",  # Fixtures may not be used directly
-    "ARG002",  # Fixtures may not be used directly
+    # Typing
+    "ANN",         # allow missing type annotations in tests
+
+    # Logic / code quality simplification rules
+    "SIM",         # allow more explicit test logic
+    "PIE",         # allow less opinionated patterns in tests
+    "C4",          # comprehensions suggestions often not worth it
+    "RET",         # return style is not relevant in tests
+
+    # Exception handling rules
+    "BLE",         # allow generic except in tests
+    "TRY",         # allow generic exception testing
+    "RSE",         # less strict raise style
+
+    # Performance
+    "PERF",        # performance does not matter in tests
 ]
-"**/test_*.py" = [
-    "ANN",
-    "S101",
-    "PLR2004",
-    "PLR0913",
-    "PLR0915",
-    "PLR6301",
-    "C901",
-    "SLF001",
-    "ARG001",
-    "ARG002",
-]
-"conftest.py" = ["ANN", "ARG001", "ARG002"]
-"__init__.py" = ["F401"]  # Allow unused imports for re-export
 
 [format]
-# Standard formatting settings (compatible with Black)
 quote-style = "double"
 indent-style = "space"
