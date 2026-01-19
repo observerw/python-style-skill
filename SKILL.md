@@ -23,5 +23,6 @@ ALWAYS use `--help` if more information about the cli tool is needed.
 
 ## References
 
-- [Linting and Code Quality](references/linting.md): MUST be read first when aiming to improve code quality.
+- [Exception Design](references/exceptions.md): Guidelines for designing exceptions in libraries and applications.
 - [Logging Guidelines](references/logging.md): Standards for structuring logs.
+- [Linting and Code Quality](references/linting.md): MUST be read first when aiming to improve code quality.
