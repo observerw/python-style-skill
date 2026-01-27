@@ -18,7 +18,7 @@ select = [
     "RET",             # flake8-return — consistent return statements
 
     # Exception & error handling
-    "BLE",             # blind except — avoid 'except:' without type
+    "BLE",             # flake8-blind-except — avoid catching 'Exception' directly
     "TRY",             # tryceratops — clean exception handling
     "RSE",             # raise — ensure proper raise statements
 
