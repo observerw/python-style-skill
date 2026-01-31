@@ -118,7 +118,15 @@ class DataSource:
 
 
 class ServiceError(Exception):
-    """RULE: Domain-specific exceptions only."""
+    """
+    RULE: Define a base exception for each module/domain to isolate error handling.
+    
+    ANTI-PATTERN: raise Exception("service error")
+    """
+
+
+class AuthError(Exception):
+    """RULE: Different modules (e.g., Auth vs Service) MUST have distinct, independent base exceptions."""
 
 
 class NotFoundError(ServiceError):
