@@ -117,16 +117,25 @@ class DataSource:
     priority: int = 0
 
 
-class ServiceError(Exception):
-    """
-    RULE: Define a base exception for each module/domain to isolate error handling.
-    
-    ANTI-PATTERN: raise Exception("service error")
-    """
-
+# --- Module: auth ---
 
 class AuthError(Exception):
-    """RULE: Different modules (e.g., Auth vs Service) MUST have distinct, independent base exceptions."""
+    """Base exception for the auth module."""
+
+
+class InvalidTokenError(AuthError):
+    pass
+
+
+# --- Module: service ---
+
+class ServiceError(Exception):
+    """
+    Base exception for the service module.
+    
+    RULE: Define a base exception for each module to isolate error handling.
+    RULE: ServiceError and AuthError must be independent (no common base besides Exception).
+    """
 
 
 class NotFoundError(ServiceError):
