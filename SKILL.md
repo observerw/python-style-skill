@@ -30,12 +30,13 @@ When deeply modifying code in these areas, you MUST read the corresponding docum
 ```python
 from __future__ import annotations
 
-# RULE: Use relative imports for intra-package imports.
-# RULE: Use absolute imports for inter-package and third-party imports.
+# RULE: Use relative imports for intra-package references, strictly limited to 2 levels (. or ..).
+# RULE: Use absolute imports for references requiring 3 or more levels of nesting (...) to maintain readability.
 from . import internal_module
+from .. import parent_helper
 from anyio import fail_after
-# ANTI-PATTERN: from mypackage.module import thing  # (when inside mypackage)
-# ANTI-PATTERN: from ..other_package import thing
+# ANTI-PATTERN: from ...deep_parent import thing  # (Too many dots!)
+# ANTI-PATTERN: from mypackage.module import thing  # (Use relative import for internal stuff)
 
 import time
 from collections.abc import Awaitable, Callable
@@ -85,7 +86,7 @@ class Validator(Protocol):
 @attrs.define
 class Config:
     """
-    RULE: ALL classes MUST use @attrs.define or @attrs.frozen.
+    RULE: Use @attrs.define or @attrs.frozen for most classes, unless there is a specific need (e.g., Pydantic models, Exceptions, or TypedDict).
 
     ANTI-PATTERN: class Foo: def __init__(self, x): self.x = x
     """
@@ -132,7 +133,7 @@ class InvalidTokenError(AuthError):
 class ServiceError(Exception):
     """
     Base exception for the service module.
-    
+
     RULE: Define a base exception for each module to isolate error handling.
     RULE: ServiceError and AuthError must be independent (no common base besides Exception).
     """
@@ -218,6 +219,20 @@ class ApiClient:
             return FetchResult(data=None, error=f"timeout: {e}")
         except ConnectionError as e:
             return FetchResult(data=None, error=f"connection failed: {e}")
+
+    def _safe_shutdown(self) -> None:
+        """
+        RULE: 'except Exception' is allowed ONLY if necessary (e.g., crash barriers).
+        RULE: MUST use '# noqa' AND provide an explanation.
+
+        ANTI-PATTERN:
+            try: ...
+            except Exception: pass
+        """
+        try:
+            self.config = None
+        except Exception:  # noqa: BLE001 to guarantees process exit
+            logger.exception("Cleanup failed")
 
     async def _fetch_from(self, source: DataSource, user_id: str) -> UserData:
         """
